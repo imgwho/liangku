@@ -1,0 +1,554 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=Edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
+  <title>四川省粮油集团粮食安全综合信息展示平台</title>
+  <link rel="stylesheet" href="css/animate.min.css" />
+  <link rel="stylesheet" href="css/base.css" />
+  <link rel="stylesheet" href="css/style.css" />
+  <script src="js/jquery-1.11.3.min.js"></script>
+  <script src="js/jquery.SuperSlide.2.1.1.js"></script>
+
+  <!--js引用-->
+
+  <script src="js/echarts.min.js"></script>
+  <script src="js/circleChart.js"></script>
+  <script src="js/public.js"></script>
+
+  <style>
+    .wrap {
+      margin: 0 auto;
+      background: url('./images/map_sichuan.png') center center no-repeat / cover;
+      height: 900px;
+      width: 1500px;
+      background-size: 80%;
+    }
+
+    .index-leftCount li {
+      display: inline-block;
+      cursor: pointer;
+    }
+
+    .place div {
+      /* cursor: pointer; */
+    }
+
+    .place span {
+      /* background-color: #1C7DDA; */
+      color: #ffffff;
+      font-weight: bold;
+      /* padding: 1px 5px; */
+      /* border: .5px solid #fff; */
+      border-radius: 2px;
+    }
+
+    .caiyou {
+      position: absolute;
+      top: 155px;
+      left: 618px;
+      z-index: 8;
+    }
+
+    .nanchong {
+      position: absolute;
+      top: 250px;
+      left: 1027px;
+      z-index: 8;
+    }
+
+    .baijia {
+      position: absolute;
+      top: 250px;
+      left: 800px;
+      z-index: 8;
+    }
+
+    .pengsan {
+      position: absolute;
+      top: 350px;
+      left: 780px;
+      z-index: 8;
+    }
+
+    .xinanshigu {
+      position: absolute;
+      top: 486px;
+      left: 935px;
+      z-index: 8;
+    }
+
+    .place .detail {
+      /* background-color: #092257; */
+      background: url('./images/detail_bg.png') center center no-repeat / cover;
+      width: 686px;
+      height: 857px;
+      text-align: center;
+      margin: 0 auto;
+      margin-top: 35px;
+      padding: 20px;
+      /* border: 1px solid #03ECF3; */
+      position: absolute;
+      top: 0;
+      left: 300px;
+      z-index: 99999;
+      display: none;
+    }
+
+    .place .detail h1 {
+      font-size: 30px;
+      margin: 50px 0;
+    }
+
+    .place .detail .text {
+      padding: 20px;
+      text-align: left;
+      line-height: 1.5;
+      margin-top: 40px;
+      overflow: auto;
+      height: 353px;
+      z-index: 99999999;
+    }
+
+    .place .detail .text p {
+      text-indent: 2em;
+    }
+
+    .placebox .weather {
+      /* display: inline-block; */
+    }
+
+    .weather {
+      visibility: hidden;
+    }
+
+    .visibility {
+      visibility: visible;
+    }
+
+    .liangku_type {
+      height: 568px;
+      padding: 20px;
+      margin-top: 20px;
+      background: url('./images/liangku_type_bg.png') center center no-repeat / contain;
+    }
+
+    .liangku_type .title h1::before {
+      content: url('./images/icon_liangku_type.png');
+      margin-right: 5px;
+      vertical-align: -3px;
+    }
+
+    .liangku_status {
+      height: 440px;
+      margin-top: -10px;
+      padding: 20px;
+      background: url('./images/liangku_status_bg.png') center center no-repeat / contain;
+    }
+
+    .liangku_status .title h1::before {
+      content: url('./images/icon_liangku_status.png');
+      margin-right: 5px;
+      vertical-align: -3px;
+    }
+
+    .icon_close {
+      position: absolute;
+      right: 25px;
+      cursor: pointer;
+    }
+
+    .hide {
+      display: none;
+    }
+
+    /* 本例子css */
+    .slideBox {
+      height: 230px;
+      overflow: hidden;
+      position: relative;
+      /* border: 1px solid #ddd; */
+    }
+
+    .slideBox .hd {
+      height: 15px;
+      overflow: hidden;
+      position: absolute;
+      right: 5px;
+      bottom: 5px;
+      z-index: 1;
+    }
+
+    .slideBox .hd ul {
+      overflow: hidden;
+      zoom: 1;
+      float: left;
+    }
+
+    .slideBox .hd ul li {
+      float: left;
+      margin-right: 2px;
+      width: 15px;
+      height: 15px;
+      line-height: 14px;
+      text-align: center;
+      /* background: #fff; */
+      cursor: pointer;
+    }
+
+    .slideBox .hd ul li.on {
+      background: #f00;
+      color: #fff;
+    }
+
+    .slideBox .bd {
+      position: relative;
+      height: 100%;
+      z-index: 0;
+    }
+
+    .slideBox .bd li {
+      zoom: 1;
+      vertical-align: middle;
+    }
+
+    .slideBox .bd img {
+      /* width: 450px; */
+      margin: 0 auto;
+      height: 230px;
+      display: block;
+    }
+
+    /* 下面是前/后按钮代码，如果不需要删除即可 */
+    .slideBox .prev,
+    .slideBox .next {
+      position: absolute;
+      left: 3%;
+      top: 50%;
+      margin-top: -25px;
+      display: block;
+      width: 32px;
+      height: 40px;
+      background: url(./images/slider-arrow.png) -110px 5px no-repeat;
+      filter: alpha(opacity=50);
+      opacity: 0.5;
+    }
+
+    .slideBox .next {
+      left: auto;
+      right: 3%;
+      background-position: 8px 5px;
+    }
+
+    .slideBox .prev:hover,
+    .slideBox .next:hover {
+      filter: alpha(opacity=100);
+      opacity: 1;
+    }
+
+    .slideBox .prevStop {
+      display: none;
+    }
+
+    .slideBox .nextStop {
+      display: none;
+    }
+
+    .detail {
+      /*隐藏滚动条，当IE下溢出，仍然可以滚动*/
+      -ms-overflow-style: none;
+      /*火狐下隐藏滚动条*/
+      overflow: -moz-scrollbars-none;
+    }
+
+    /*Chrome下隐藏滚动条，溢出可以透明滚动*/
+    .detail ::-webkit-scrollbar {
+      width: 0px;
+    }
+
+    .pointer {
+      cursor: pointer;
+    }
+  </style>
+</head>
+
+<body>
+
+  <div class="wk">
+    <div class="content">
+      <div class="header">
+      </div>
+      <div class="footer">
+        <!-- <div class="iblock">四川省河长制办公室</div> -->
+        <div id="showTime" class="iblock"></div>
+      </div>
+      <!--首页内容-->
+      <div id="index" class="section">
+        <!--左面板-->
+        <div class="left-panel animated flipInY">
+          <div class="liangku_type">
+            <div class="title">
+              <h1>粮食种类<span>grain storage type</span></h1>
+
+            </div>
+            <div class="circle_data clearfix">
+              <div class="item clearfix">
+                <div class="jbts-percentage jbts1" data-value="27" data-color="#f01056"></div>
+                <div class="text">
+                  <span class="cn">小麦</span>
+                  <!-- <div class="en">wheat</div> -->
+                </div>
+              </div>
+              <div class="item clearfix">
+                <div class="jbts-percentage jbts2" data-value="38" data-color="#f01056"></div>
+                <div class="text">
+                  <span class="cn">稻谷</span>
+                  <!-- <div class="en">wheat</div> -->
+                </div>
+              </div>
+              <div class="item clearfix">
+                <div class="jbts-percentage jbts3" data-value="12" data-color="#f01056"></div>
+                <div class="text">
+                  <span class="cn">玉米</span>
+                  <!-- <div class="en">wheat</div> -->
+                </div>
+              </div>
+              <div class="item clearfix">
+                <div class="jbts-percentage jbts4" data-value="23" data-color="#f01056"></div>
+                <div class="text">
+                  <span class="cn">菜油</span>
+                  <!-- <div class="en">wheat</div> -->
+                </div>
+              </div>
+            </div>
+            <div class="index-k1">
+              <div id="lkcb-charts" class="charts"></div>
+            </div>
+          </div>
+          <div class="liangku_status">
+            <div class="title">
+              <h1>粮食状态发展<span>GRAIN situation</span></h1>
+            </div>
+            <div id="lkzt-charts"></div>
+          </div>
+        </div>
+        <!--中间面板-->
+        <div class="con-panel animated bounceInDown">
+          <div class="wrap">
+            <!-- <img src="images/map_sichuan.png"> -->
+            <!-- <video src="./images/h.webm" autoplay loop playinline muted></video> -->
+            <div class="place">
+              <div class="caiyoubox placebox">
+                <div class="detail">
+                  <img class="icon_close" src="./images/icon_close.png" alt="">
+                  <h1>菜籽油基地</h1>
+                  <!-- <img src="./images/detail_img.png" alt=""> -->
+                  <div id="slideBox" class="slideBox">
+                    <div class="hd">
+                      <ul>
+                      </ul>
+                    </div>
+                    <div class="bd">
+                      <ul>
+                        <li><a target="_blank"><img src="./images/detail_img.png" /></a></li>
+                        <li><a target="_blank"><img src="./images/detail_img2.png" /></a></li>
+                        <li><a target="_blank"><img src="./images/detail_img.png" /></a></li>
+                      </ul>
+                    </div>
+                    <!-- 下面是前/后按钮代码，如果不需要删除即可 -->
+                    <a class="prev" href="javascript:void(0)"></a>
+                    <a class="next" href="javascript:void(0)"></a>
+                  </div>
+                  <!-- 下面是前/后按钮代码，如果不需要删除即可 -->
+                  <a class="prev" href="javascript:void(0)"></a>
+                  <a class="next" href="javascript:void(0)"></a>
+                  <div class="text">
+                    <p>
+                      四川省粮油集团有限责任公司（以下简称川粮集园）是于1996年经四川首人民政府批准成立的国有骨干大型粮由企业集团014年下半年，按照省委省政府改革音曙署，与四川商业集团蹩合组建四川省商业投资集团。作为承接四川省委省政府实施粮食安调控的重要载体和平台，在保障粮食安全、晌应应急灾等方面发挥了重大作用
+                    </p>
+                    <p>
+                      川粮集团现资产规模10销售收入30亿元。所属二级企业十余家，涉及粮油储备
+                      业不动产等领娀，拥有彭山国家粮食仓库、白家粮库、簇桥仓库等储夤库及国内一流粮油仓储运輸祲施、铁踣专用。集回下辖四川省彭山国家粮食仓库（主库区）的基本情况如下：
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                  </div>
+                </div>
+                <div class="caiyou pointer">
+                  <img class="weather" src="./images/icon_duoyun.png" alt="">
+                  <img src="./images/icon_circle.png" alt="">
+                  <span>菜籽油基地</span>
+                </div>
+              </div>
+              <div class="nanchongbox placebox">
+                <div class="detail" id="nanchong">
+                  <img class="icon_close" src="./images/icon_close.png" alt="">
+                  <h1>南充基地</h1>
+                  <!-- <img src="./images/detail_img.png" alt=""> -->
+                  <div id="slideBox" class="slideBox">
+                    <div class="hd">
+                      <ul>
+                      </ul>
+                    </div>
+                    <div class="bd">
+                      <ul>
+                        <li><a target="_blank"><img src="./images/detail_img.png" /></a></li>
+                        <li><a target="_blank"><img src="./images/detail_img2.png" /></a></li>
+                        <li><a target="_blank"><img src="./images/detail_img.png" /></a></li>
+                      </ul>
+                    </div>
+                    <!-- 下面是前/后按钮代码，如果不需要删除即可 -->
+                    <a class="prev" href="javascript:void(0)"></a>
+                    <a class="next" href="javascript:void(0)"></a>
+                  </div>
+                  <!-- 下面是前/后按钮代码，如果不需要删除即可 -->
+                  <a class="prev" href="javascript:void(0)"></a>
+                  <a class="next" href="javascript:void(0)"></a>
+                  <div class="text">
+                    <p>
+                      四川省粮油集团有限责任公司（以下简称川粮集园）是于1996年经四川首人民政府批准成立的国有骨干大型粮由企业集团014年下半年，按照省委省政府改革音曙署，与四川商业集团蹩合组建四川省商业投资集团。作为承接四川省委省政府实施粮食安调控的重要载体和平台，在保障粮食安全、晌应应急灾等方面发挥了重大作用
+                    </p>
+                    <p>
+                      川粮集团现资产规模10销售收入30亿元。所属二级企业十余家，涉及粮油储备
+                      业不动产等领娀，拥有彭山国家粮食仓库、白家粮库、簇桥仓库等储夤库及国内一流粮油仓储运輸祲施、铁踣专用。集回下辖四川省彭山国家粮食仓库（主库区）的基本情况如下：
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                    <p>
+                      该库地处四川省彭山县观音镇。交通区位优勢突出，粮库紧邻国道245线，距成乐高速青龙出口3公里、彭山出口6公里，与成昆铁路青龙火车站相距2公里。库区位于亚热带湿润气候区，地区间气候变化不大，气候温和，雨量充沛，四季分明，夏无酷暑旱：冬无酒雪，但多寒淜低温：春季气温回升早，秋多雨降温快。库区防洪设计标冫施配备齐全库区监控实现了全覆盖，库区周边无污染源、危险源、仓储区办公区及附属区有围隔开，罐区与仓储区有护油堤隔开。
+                    </p>
+                  </div>
+                </div>
+                <div class="nanchong pointer">
+                  <img class="weather" src="./images/icon_duoyun.png" alt="">
+                  <img src="./images/icon_circle.png" alt="">
+                  <span>南充基地</span>
+                </div>
+              </div>
+              <div class="baijiabox placebox">
+                <div class="detail" id="nanchong">
+                  <img class="icon_close" src="./images/icon_close.png" alt="">
+                  <h1>白家粮库</h1>
+                  <img src="./images/detail_img.png" alt="">
+                  <div class="text">
+                    <p>
+                      白家粮库始建于上个世纪90年代初期，位于成都市高新区天府三街，紧邻双流火车站，具有铁路专用线（双流航都粮油公司资产），是一个集仓储、物流、贸易为一体的综合性粮食仓储企业。承担集团仓储服务、物流运输等业务。
+                    </p>
+                    <p>
+                      白家仓库2002年7月组建初期仓容22500吨，7栋仓房。2004年经财政贴息贷款800万元扩建仓容20500吨，扩建后总仓容43000吨。2006年再经功能提升项目对原有的仓容22500吨，共7栋进行保温、隔热、气密、防水等改造，同时兴建（2160㎡）中转罩棚和（600㎡）机械罩棚。目前，共有13栋仓房。6栋2500吨仓（839∕980）；1栋7500吨仓（2400）；4栋5000吨仓（1136∕1200）；2160㎡中转罩棚和600㎡机械罩棚。
+                    </p>
+                    <p>
+                      白家粮库属中央、省级储备库承储资格认定企业，共有仓容4.3万吨。过去主要承担3.8万吨中央、省级储备粮的仓储管理职能。粮库占地面积60亩，其中出让土地38亩，租用土地22亩。（食用油储备罐7000吨）
+                    </p>
+                  </div>
+                </div>
+                <div class="baijia pointer">
+                  <img class="weather" src="./images/icon_qingyu.png" alt="">
+                  <img src="./images/icon_circle.png" alt="">
+                  <span>白家粮库</span>
+                </div>
+              </div>
+              <div class="pengsanbox placebox">
+                <div class="detail" id="nanchong">
+                  <img class="icon_close" src="./images/icon_close.png" alt="">
+                  <h1>彭山粮库</h1>
+                  <img src="./images/detail_img.png" alt="">
+                  <div class="text">
+                    <p>
+                      白家粮库始建于上个世纪90年代初期，位于成都市高新区天府三街，紧邻双流火车站，具有铁路专用线（双流航都粮油公司资产），是一个集仓储、物流、贸易为一体的综合性粮食仓储企业。承担集团仓储服务、物流运输等业务。
+                    </p>
+                    <p>
+                      白家仓库2002年7月组建初期仓容22500吨，7栋仓房。2004年经财政贴息贷款800万元扩建仓容20500吨，扩建后总仓容43000吨。2006年再经功能提升项目对原有的仓容22500吨，共7栋进行保温、隔热、气密、防水等改造，同时兴建（2160㎡）中转罩棚和（600㎡）机械罩棚。目前，共有13栋仓房。6栋2500吨仓（839∕980）；1栋7500吨仓（2400）；4栋5000吨仓（1136∕1200）；2160㎡中转罩棚和600㎡机械罩棚。
+                    </p>
+                    <p>
+                      白家粮库属中央、省级储备库承储资格认定企业，共有仓容4.3万吨。过去主要承担3.8万吨中央、省级储备粮的仓储管理职能。粮库占地面积60亩，其中出让土地38亩，租用土地22亩。（食用油储备罐7000吨）
+                    </p>
+                  </div>
+                </div>
+                <div class="pengsan pointer">
+                  <img class="weather" src="./images/icon_qingyun.png" alt="">
+                  <img src="./images/icon_circle.png" alt="">
+                  <span>彭山粮库</span>
+                </div>
+              </div>
+              <div class="xinanshigubox placebox">
+                <div class="detail" id="nanchong">
+                  <img class="icon_close" src="./images/icon_close.png" alt="">
+                  <h1>四川粮油西南食谷项目</h1>
+                  <img src="./images/detail_img.png" alt="">
+                  <div class="text">
+                    <p>
+                      白家粮库始建于上个世纪90年代初期，位于成都市高新区天府三街，紧邻双流火车站，具有铁路专用线（双流航都粮油公司资产），是一个集仓储、物流、贸易为一体的综合性粮食仓储企业。承担集团仓储服务、物流运输等业务。
+                    </p>
+                    <p>
+                      白家仓库2002年7月组建初期仓容22500吨，7栋仓房。2004年经财政贴息贷款800万元扩建仓容20500吨，扩建后总仓容43000吨。2006年再经功能提升项目对原有的仓容22500吨，共7栋进行保温、隔热、气密、防水等改造，同时兴建（2160㎡）中转罩棚和（600㎡）机械罩棚。目前，共有13栋仓房。6栋2500吨仓（839∕980）；1栋7500吨仓（2400）；4栋5000吨仓（1136∕1200）；2160㎡中转罩棚和600㎡机械罩棚。
+                    </p>
+                    <p>
+                      白家粮库属中央、省级储备库承储资格认定企业，共有仓容4.3万吨。过去主要承担3.8万吨中央、省级储备粮的仓储管理职能。粮库占地面积60亩，其中出让土地38亩，租用土地22亩。（食用油储备罐7000吨）
+                    </p>
+                  </div>
+                </div>
+                <div class="xinanshigu pointer">
+                  <img class="weather" src="./images/icon_qing.png" alt="">
+                  <img src="./images/icon_circle.png" alt="">
+                  <span>四川粮油西南食谷项目</span>
+                </div>
+              </div>
+            </div>
+            <ul class="index-leftCount">
+              <li>
+                <div class="v view_weather" onclick="javascript:this.innerHTML=(this.innerHTML=='查看天气'?'关闭天气':'查看天气');">查看天气</div>
+              </li>
+            </ul>
+          </div>
+        </div>
+        <!--右面板-->
+        <div class="right-panel animated flipInY">
+          <!--统计-->
+          <div class="title">
+            <h1>粮食销售额<span>(亿元)</span></h1>
+            <h3>grain storage sales</h3>
+          </div>
+          <div class="index-k1">
+            <div id="lkxse-charts"></div>
+          </div>
+          <div class="index-k2">
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+  <script>
+    jQuery(".slideBox").slide({ mainCell: ".bd ul", autoPlay: false });
+  </script>
+
+</body>
+
+</html>
